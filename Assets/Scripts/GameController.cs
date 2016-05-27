@@ -113,7 +113,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-            Debug.Log("SUCA!");
+            Debug.Log("QUICKTIME EVENT FALLITO");
         }
 
     }
