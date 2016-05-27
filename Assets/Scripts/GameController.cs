@@ -30,6 +30,7 @@ public class GameController : MonoBehaviour
     private float waitDuration;
     private float startWait;
     private int moveSetCounter;
+	//private bool waveExist;
     // Use this for initialization
 
     void Awake()
@@ -38,6 +39,7 @@ public class GameController : MonoBehaviour
         waitDuration = Random.Range(minWaitDuration, maxWaitDuration);
         moveSetCounter = 0;
         startWait = 0;
+		//waveExist = true;
     }
     void Start()
     {
@@ -48,26 +50,31 @@ public class GameController : MonoBehaviour
     void Update()
     {
         //TEST
-        if (moveSetCounter == moveSet.Count)
-        {
-            Debug.Log("SET DI NEMICI SPAWNATO, PROSSIMO SET");
-            moveSetCounter = 0;
-            RandomizeMove();
-        }
-        //TEST
-        if ((Time.time - startWait) > waitDuration && !quickTimeObject.activeSelf && moveSetCounter < moveSet.Count)
-        {
+        if (moveSetCounter == moveSet.Count) {
+			//waveExist = false;
+			myCameraScript.CheckWaypoint();
+		} else {
+			//TEST
+			if ((Time.time - startWait) > waitDuration && !quickTimeObject.activeSelf && moveSetCounter < moveSet.Count) {
 
-            ActivateQuicktime();
-        }
-        if (Input.anyKeyDown && quickTimeObject.activeSelf)
-        {
-            CheckInput();
-            quickTimeObject.SendMessage("Deactivate");
-        }
+				ActivateQuicktime ();
+			}
+			if (Input.anyKeyDown && quickTimeObject.activeSelf) {
+				CheckInput ();
+				quickTimeObject.SendMessage ("Deactivate");
+			}
+		}
 
 
     }
+
+	public void SpawnWave()
+	{
+		Debug.Log("SET DI NEMICI SPAWNATO, PROSSIMO SET");
+		moveSetCounter = 0;
+		RandomizeMove();
+		//waveExist = true;
+	}
 
     public void MoveCamera()
     {

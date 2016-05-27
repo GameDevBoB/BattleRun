@@ -72,6 +72,7 @@ public class CameraMove : MonoBehaviour {
             currentLerp = lerpTime;
             moveNext = false;
             currentCameraPosition = transform.position;
+			GameController.instance.SpawnWave();
         }
 
         float perc = currentLerp / lerpTime;
