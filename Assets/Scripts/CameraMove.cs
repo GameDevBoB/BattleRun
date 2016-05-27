@@ -1,10 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+public enum LerpType
+{
+    Sin,
+    Cos,
+    Exp,
+    Smooth,
+    SmoothMod
+};
+
 public class CameraMove : MonoBehaviour {
 
     public Transform[] cameraWaypoints;
     public Transform player;
+    public LerpType myLerp;
+
+    private float currentLerp;
     private Vector3 currentCameraPosition;
     private Vector3 nextCameraPosition;
     private int index;
@@ -18,7 +31,8 @@ public class CameraMove : MonoBehaviour {
         //currentCameraPosition = transform;
         nextCameraPosition = cameraWaypoints[1].position;
         currentCameraPosition = cameraWaypoints[0].position;
-
+        transform.position = currentCameraPosition;
+        transform.LookAt(player);
         index = 1;
 	}
 	
@@ -42,19 +56,46 @@ public class CameraMove : MonoBehaviour {
             index++;
             clickTime = Time.time;
             moveNext = true;
+            currentLerp = 0;
         }
 
     }
 
     void MoveCamera()
     {
-        if ((Time.time - clickTime) <= lerpTime) {
-            transform.position = Vector3.Lerp(currentCameraPosition, nextCameraPosition, ((Time.time - clickTime) / lerpTime));
+        if (currentLerp < lerpTime)
+        {
+            currentLerp += Time.deltaTime;
         }
         else
         {
+            currentLerp = lerpTime;
             moveNext = false;
             currentCameraPosition = transform.position;
         }
+
+        float perc = currentLerp / lerpTime;
+        switch (myLerp)
+        {
+            case LerpType.Sin:
+                perc = Mathf.Sin(perc * Mathf.PI * 0.5f);
+                break;
+            case LerpType.Cos:
+                perc = 1f - Mathf.Cos(perc * Mathf.PI * 0.5f);
+                break;
+            case LerpType.Exp:
+                perc = perc * perc;
+                break;
+            case LerpType.Smooth:
+                perc = perc * perc * (3f - 2f * perc);
+                break;
+            case LerpType.SmoothMod:
+                perc = perc * perc * perc * (perc * (6f * perc - 15f) + 10f);
+                break;
+        }
+        perc = 1f - Mathf.Cos(perc * Mathf.PI * 0.5f);
+        //transform.position = Vector3.Lerp(startPosition, actualDestination, perc);
+        transform.position = Vector3.Lerp(currentCameraPosition, nextCameraPosition, perc);
+        
     }
 }
