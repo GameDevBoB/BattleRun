@@ -5,8 +5,8 @@ public class CameraMove : MonoBehaviour {
 
     public Transform[] cameraWaypoints;
     public Transform player;
-    private Transform currentCameraPosition;
-    private Transform nextCameraPosition;
+    private Vector3 currentCameraPosition;
+    private Vector3 nextCameraPosition;
     private int index;
     private bool moveNext;
     public float lerpTime=2;
@@ -15,9 +15,10 @@ public class CameraMove : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        currentCameraPosition = transform;
-        nextCameraPosition = cameraWaypoints[1];
-        currentCameraPosition.position = cameraWaypoints[0].position;
+        //currentCameraPosition = transform;
+        nextCameraPosition = cameraWaypoints[1].position;
+        currentCameraPosition = cameraWaypoints[0].position;
+
         index = 1;
 	}
 	
@@ -37,7 +38,7 @@ public class CameraMove : MonoBehaviour {
     {
         if (index <= 2)
         {
-            nextCameraPosition.position = cameraWaypoints[index].position;
+            nextCameraPosition = cameraWaypoints[index].position;
             index++;
             clickTime = Time.time;
             moveNext = true;
@@ -47,12 +48,13 @@ public class CameraMove : MonoBehaviour {
 
     void MoveCamera()
     {
-        if ((Time.time - clickTime) <= lerpTime)
-            transform.position = Vector3.Lerp(currentCameraPosition.position, nextCameraPosition.position, ((Time.time - clickTime)/lerpTime));
+        if ((Time.time - clickTime) <= lerpTime) {
+            transform.position = Vector3.Lerp(currentCameraPosition, nextCameraPosition, ((Time.time - clickTime) / lerpTime));
+        }
         else
         {
             moveNext = false;
-            currentCameraPosition.position = transform.position;
+            currentCameraPosition = transform.position;
         }
     }
 }

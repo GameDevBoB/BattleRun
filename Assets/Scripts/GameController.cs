@@ -50,7 +50,7 @@ public class GameController : MonoBehaviour
         //TEST
         if (moveSetCounter == moveSet.Count)
         {
-            Debug.Log("SET DI NEMICI SPAWNATO, PROSSIMO SET");
+            //Debug.Log("SET DI NEMICI SPAWNATO, PROSSIMO SET");
             moveSetCounter = 0;
             RandomizeMove();
         }
