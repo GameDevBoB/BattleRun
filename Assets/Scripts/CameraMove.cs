@@ -23,7 +23,7 @@ public class CameraMove : MonoBehaviour {
     private int index;
     private bool moveNext;
     public float lerpTime=2;
-    private float clickTime;
+    //private float clickTime;
     
 
     // Use this for initialization
@@ -54,7 +54,7 @@ public class CameraMove : MonoBehaviour {
         {
             nextCameraPosition = cameraWaypoints[index].position;
             index++;
-            clickTime = Time.time;
+            //clickTime = Time.time;
             moveNext = true;
             currentLerp = 0;
         }
