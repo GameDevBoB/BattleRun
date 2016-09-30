@@ -6,8 +6,8 @@ public class QuickTimeEvent : MonoBehaviour
 {
 
     public Slider quickTimeRing;
-    public string[] moveKeys;
-    public Text moveText;
+    public Sprite[] moveKeys;
+    public Image moveImage;
     public Canvas canvasQte;
 
 
@@ -56,7 +56,7 @@ public class QuickTimeEvent : MonoBehaviour
 
     void DoQuickTime()
     {
-        quickTimeRing.value = quickTimeRing.maxValue - ((Time.time - startTime) / (duration * quickTimeRing.maxValue));
+        quickTimeRing.value = quickTimeRing.minValue + ((Time.time - startTime) / (duration * quickTimeRing.maxValue));
     }
 
     public void SetMove(Moves newMove)
@@ -64,13 +64,13 @@ public class QuickTimeEvent : MonoBehaviour
         switch (newMove)
         {
             case Moves.attack1:
-                moveText.text = moveKeys[0];
+                moveImage.sprite = moveKeys[0];
                 break;
             case Moves.attack2:
-                moveText.text = moveKeys[1];
+                moveImage.sprite = moveKeys[1];
                 break;
             case Moves.attack3:
-                moveText.text = moveKeys[2];
+                moveImage.sprite = moveKeys[2];
                 break;
             //case moves.attack4:
                 //break;

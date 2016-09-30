@@ -38,11 +38,11 @@ public class CameraMove : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        transform.LookAt(player);
 
         if (moveNext)
         {
             MoveCamera();
-            transform.LookAt(player);
         }
         
 	
