@@ -1,35 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+//using System;
 
 
-public enum moves
+public enum Moves
 {
     attack1,
     attack2,
     attack3,
-    attack4,
-    attack5,
-    attack6,
-    attack7,
-    attack8
+    //attack4,
+    //attack5,
+    //attack6,
+    //attack7,
+    //attack8
 }
+
+
 public class GameController : MonoBehaviour
 {
 
     public CameraMove myCameraScript;
-    public List<moves> moveSet;
+    //public List<moves> moveSet;
+    public GameObject[] enemyPrefabs;
+    public int enemyStageNumber;
     public float minTimeDuration;
     public float maxTimeDuration;
     public float minWaitDuration;
     public float maxWaitDuration;
-    public GameObject quickTimeObject;
     public static GameController instance;
-
+    public Transform[] enemySpawnPoints;
+    public GameObject player;
 
     private float waitDuration;
     private float startWait;
-    private int moveSetCounter;
+    //private int enemyStageCounter;
+    private Moves actualMove;
+    private GameObject quickTimeObject;
+    //private int moveSetCounter;
+    public List<GameObject> enemyStage;
+    private int enemySpawnPointCounter;
+    private int movesCount;
 	//private bool waveExist;
     // Use this for initialization
 
@@ -37,44 +48,81 @@ public class GameController : MonoBehaviour
     {
         instance = this;
         waitDuration = Random.Range(minWaitDuration, maxWaitDuration);
-        moveSetCounter = 0;
+        //moveSetCounter = 0;
+        //enemyStageCounter = 0;
         startWait = 0;
 		//waveExist = true;
+        movesCount = System.Enum.GetNames(typeof(Moves)).Length;
+        //Debug.Log("pincopallino " + pincopallino);
     }
     void Start()
     {
-
+        enemySpawnPointCounter = 0;
+        enemyStage = new List<GameObject>();
+        SpawnEnemies();
+        RandomizeEnemies();
     }
 
     // Update is called once per frame
     void Update()
     {
         //TEST
-        if (moveSetCounter == moveSet.Count) {
+        if (enemyStage.Count == 0) {
 			//waveExist = false;
 			myCameraScript.CheckWaypoint();
 		} else {
 			//TEST
-			if ((Time.time - startWait) > waitDuration && !quickTimeObject.activeSelf && moveSetCounter < moveSet.Count) {
-
+			if ((Time.time - startWait) > waitDuration && (!quickTimeObject || !quickTimeObject.activeSelf) && enemyStage.Count > 0) {
+                quickTimeObject = enemyStage[0].transform.GetChild(0).GetChild(0).gameObject;
 				ActivateQuicktime ();
 			}
 			if (Input.anyKeyDown && quickTimeObject.activeSelf) {
-				CheckInput ();
-				quickTimeObject.SendMessage ("Deactivate");
-			}
+                quickTimeObject.SendMessage("Deactivate");
+                CheckInput ();
+                CancelInvoke("GetDamage");
+            }
 		}
 
 
     }
 
-	public void SpawnWave()
+    void SpawnEnemies()
+    {
+        GameObject enemy;
+
+        for(int i = 0; i < enemyStageNumber; i++)
+        {
+            //Debug.Log(enemySpawnPoints[enemySpawnPointCounter]);
+            enemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Length)], enemySpawnPoints[enemySpawnPointCounter].position, Quaternion.identity) as GameObject;
+            enemyStage.Add(enemy);
+            enemySpawnPointCounter++;
+        }
+    }
+
+    void RandomizeEnemies()
+    {
+        int cicles = Random.Range(0, 100);
+        GameObject aux;
+        for (int i = 0; i < cicles; i++)
+        {
+            int cont1 = Random.Range(0, enemyStage.Count);
+            int cont2 = Random.Range(0, enemyStage.Count);
+            aux = enemyStage[cont1];
+            enemyStage[cont1] = enemyStage[cont2];
+            enemyStage[cont2] = aux;
+        }
+    }
+
+    public void SpawnWave()
 	{
 		Debug.Log("SET DI NEMICI SPAWNATO, PROSSIMO SET");
-		moveSetCounter = 0;
-		RandomizeMove();
-		//waveExist = true;
-	}
+		//enemyStageCounter = 0;
+        ClearStage();
+        SpawnEnemies();
+        RandomizeEnemies();
+        //RandomizeMove();
+        //waveExist = true;
+    }
 
     public void MoveCamera()
     {
@@ -83,9 +131,13 @@ public class GameController : MonoBehaviour
 
     private void ActivateQuicktime()
     {
+        float time;
         quickTimeObject.SetActive(true);
-        quickTimeObject.SendMessage("StartQuickTimeEvent", Random.Range(minTimeDuration, maxTimeDuration));
-        quickTimeObject.SendMessage("SetMove", moveSet[moveSetCounter]);
+        quickTimeObject.SendMessage("StartQuickTimeEvent", time = Random.Range(minTimeDuration, maxTimeDuration));
+        Invoke("GetDamage", time);
+        actualMove = (Moves) Random.Range(0, movesCount);
+        quickTimeObject.SendMessage("SetMove", actualMove);
+        //Debug.Log(actualMove);
 
 
 
@@ -94,48 +146,66 @@ public class GameController : MonoBehaviour
     {
         startWait = Time.time;
         waitDuration = Random.Range(minWaitDuration, maxWaitDuration);
-        moveSetCounter++;
     }
 
     void CheckInput()
     {
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) && moveSet[moveSetCounter] == moves.attack1)
+        if (Input.GetKeyDown(KeyCode.Alpha1) && actualMove == Moves.attack1)
         {
-
-            Debug.Log("BRAVO!");
-
+            //Debug.Log("BRAVO!");
+            enemyStage[0].SetActive(false);
+            enemyStage.RemoveAt(0);
+            //enemyStageCounter++;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2) && moveSet[moveSetCounter] == moves.attack2)
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && actualMove == Moves.attack2)
         {
-
-            Debug.Log("BRAVO!");
-
+            //Debug.Log("BRAVO!");
+            enemyStage[0].SetActive(false);
+            enemyStage.RemoveAt(0);
+            //enemyStageCounter++;
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3) && moveSet[moveSetCounter] == moves.attack3)
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && actualMove == Moves.attack3)
         {
-
-            Debug.Log("BRAVO!");
-
+            //Debug.Log("BRAVO!");
+            enemyStage[0].SetActive(false);
+            enemyStage.RemoveAt(0);
+            //enemyStageCounter++;
         }
         else
         {
             Debug.Log("QUICKTIME EVENT FALLITO");
-        }
-
+            GetDamage();
+        }        
     }
 
-    void RandomizeMove()
+    void ClearStage()
+    {
+        foreach (GameObject enemy in enemyStage)
+        {
+            Destroy(enemy);
+        }
+        enemyStage.Clear();
+    }
+
+    /*void RandomizeMove()
     {
         int cicles = Random.Range(0, 100);
-        for(int i = 0; i < cicles; i++)
+        moves aux;
+        for (int i = 0; i < cicles; i++)
         {
             int cont1 = Random.Range(0, moveSet.Count);
             int cont2 = Random.Range(0, moveSet.Count);
-            moves aux;
             aux = moveSet[cont1];
             moveSet[cont1] = moveSet[cont2];
             moveSet[cont2] = aux;
         }
+    }*/
+
+    void GetDamage()
+    {
+        Debug.Log("Danno!!!!");
+        RandomizeEnemies();
     }
+
 }

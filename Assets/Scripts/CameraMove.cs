@@ -50,13 +50,14 @@ public class CameraMove : MonoBehaviour {
 
     public void CheckWaypoint()
     {
-        if (index <= 2)
+        if (index <= 2 && !moveNext)
         {
             nextCameraPosition = cameraWaypoints[index].position;
             index++;
             //clickTime = Time.time;
             moveNext = true;
             currentLerp = 0;
+            player.transform.parent.gameObject.SendMessage("StartRunning");
         }
 
     }

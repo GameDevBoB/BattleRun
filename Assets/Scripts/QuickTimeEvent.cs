@@ -8,6 +8,7 @@ public class QuickTimeEvent : MonoBehaviour
     public Slider quickTimeRing;
     public string[] moveKeys;
     public Text moveText;
+    public Canvas canvasQte;
 
 
     private float duration;
@@ -32,6 +33,13 @@ public class QuickTimeEvent : MonoBehaviour
 
     }
 
+    void LateUpdate()
+    {
+
+        canvasQte.transform.LookAt(canvasQte.transform.position + Camera.main.transform.rotation * Vector3.back, Camera.main.transform.rotation * Vector3.down);
+        canvasQte.transform.Rotate(Vector3.right * 180);
+    }
+
     public void StartQuickTimeEvent(float newDuration)
     {
         duration = newDuration;
@@ -51,29 +59,29 @@ public class QuickTimeEvent : MonoBehaviour
         quickTimeRing.value = quickTimeRing.maxValue - ((Time.time - startTime) / (duration * quickTimeRing.maxValue));
     }
 
-    public void SetMove(moves newMove)
+    public void SetMove(Moves newMove)
     {
         switch (newMove)
         {
-            case moves.attack1:
+            case Moves.attack1:
                 moveText.text = moveKeys[0];
                 break;
-            case moves.attack2:
+            case Moves.attack2:
                 moveText.text = moveKeys[1];
                 break;
-            case moves.attack3:
+            case Moves.attack3:
                 moveText.text = moveKeys[2];
                 break;
-            case moves.attack4:
-                break;
-            case moves.attack5:
-                break;
-            case moves.attack6:
-                break;
-            case moves.attack7:
-                break;
-            case moves.attack8:
-                break;
+            //case moves.attack4:
+                //break;
+            //case moves.attack5:
+                //break;
+            //case moves.attack6:
+                //break;
+            //case moves.attack7:
+                //break;
+            //case moves.attack8:
+                //break;
 
         }
     }
