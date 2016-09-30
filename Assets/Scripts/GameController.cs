@@ -178,6 +178,7 @@ public class GameController : MonoBehaviour
             else
             {
                 //Debug.Log("QUICKTIME EVENT FALLITO");
+                GuiController.instance.AnimationDamage(pressedButton);
                 Damage();
             }
             CancelInvoke("Damage");

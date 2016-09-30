@@ -7,6 +7,7 @@ public class GuiController : MonoBehaviour {
     public static GuiController instance;
     public Slider healthBar;
     public Text gameOverText;
+    public Animator[] damagedAnimation;
    
     void Awake()
     {
@@ -37,5 +38,10 @@ public class GuiController : MonoBehaviour {
     public void GameOver()
     {
         gameOverText.gameObject.SetActive(true);
+    }
+    
+    public void AnimationDamage(int buttonIndex)
+    {
+        damagedAnimation[buttonIndex].SetTrigger("damage");
     }
 }
